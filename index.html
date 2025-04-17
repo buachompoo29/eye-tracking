@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interactive Media Dashboard</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+
+<body>
+  <header class="floating-header position-relative">
+    <h1 class="floating-title">Eye Tracking Visualization</h1>
+    <div class="position-absolute end-0 top-50 translate-middle-y me-4">
+      <button id="toggle-iframe-btn" class="btn btn-outline-info rounded-pill">Dashboard Detail</button>
+    </div>
+  </header>
+  
+  
+  
+  <div class="container-fluid">
+    <div class="row d-none" id="info-main-container">
+      <!-- Sidebar -->
+      <div class="col-12 col-md-3 col-lg-2 bg-light p-3 sidebar-section">
+        <!-- Group Buttons -->
+        <div class="mb-3">
+          <div id="group-buttons" class="btn-group w-100 overflow-x-auto" role="group">
+            <button type="button" class="btn btn-outline-success btn-sm px-2" data-group="nature">NATURE</button>
+            <button type="button" class="btn btn-outline-primary btn-sm px-2" data-group="drama">DRAMA</button>
+            <button type="button" class="btn btn-outline-warning btn-sm px-2" data-group="cartoon">CARTOON</button>
+          </div>
+        </div>
+        
+
+        <!-- Movie A -->
+        <div class="mb-3">
+          <label for="movie-a" class="form-label">Select Movie A:</label>
+          <select id="movie-a" class="form-select">
+            <option value="" disabled selected hidden>Select a Movie</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Scene A:</label>
+          <select id="scene-a" class="form-select" disabled>
+            <option value="" disabled selected hidden>Select a Scene</option>
+          </select>
+        </div>
+        <div class="md-3">
+          <div class="border p-3">
+            <h6 class="text-center fw-bold">First Fixation</h6>
+            <canvas id="first-fixation-chart-a" height="250"></canvas>
+          </div>
+        </div>
+
+        <!-- Movie B -->
+        <div class="mb-3">
+          <label for="movie-b" class="form-label">Select Movie B:</label>
+          <select id="movie-b" class="form-select">
+            <option value="" disabled selected hidden>Select a Movie</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Scene B:</label>
+          <select id="scene-b" class="form-select" disabled>
+            <option value="" disabled selected hidden>Select a Scene</option>
+          </select>
+        </div>
+        <div class="md-3">
+          <div class="border p-3">
+            <h6 class="text-center fw-bold">First Fixation</h6>
+            <canvas id="first-fixation-chart-b" height="250"></canvas>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Section / Visualization Panel -->
+      <div class="col-12 col-md-9 col-lg-10 p-3">
+        <!-- Top Bar: Mode Selectors centered above each clip -->
+        <div class="row text-center " style="margin-top:  -0.5rem;">
+          <!-- Mode selector for side A -->
+          <div class="col-md-6 d-flex justify-content-center">
+            <div class="mode-selector d-flex align-items-center gap-2" data-side="a">
+              <span class="fw-bold">Mode:</span>
+              <ul id="group-buttons" class="nav nav-pills nav-fill gap-2 p-1 small rounded-5 shadow-sm mb-0"
+                  role="tablist"
+                  style="background-color: #ffeedd;
+                         --bs-nav-link-color: #000; 
+                         --bs-nav-pills-link-active-color: #000; 
+                         --bs-nav-pills-link-active-bg: #ffffff;">
+                         
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active rounded-5 mode-btn" data-mode="heatmap" type="button" role="tab"
+                    data-bs-toggle="tooltip" data-bs-html="true"
+                    title="Displays gaze concentration using color gradients.<br><span style='color:orange;'>Warmer colors</span> highlight high-attention areas,<br><span style='color:blue;'>Cooler colors</span> indicate lower attention.">
+                    Heat map
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link rounded-5 mode-btn" data-mode="opacity" type="button" role="tab"
+                    data-bs-toggle="tooltip" data-bs-html="true"
+                    title="Frequently viewed areas stay visible,<br>less-viewed regions fade into darkness.<br>Creates a spotlight effect.">
+                    Opacity
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link rounded-5 mode-btn" data-mode="rawdot" type="button" role="tab"
+                    data-bs-toggle="tooltip" data-bs-html="true"
+                    title="Displays individual gaze points.<br><span style='color:red;'>Red = Low interest (1–2)</span><br><span style='color:blue;'>Blue = High interest (3–5)</span>.<br>Helps compare attention levels.">
+                    Raw Dot
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+
+          <!-- Mode selector for side B -->
+          <div class="col-md-6 d-flex justify-content-center">
+            <div class="mode-selector d-flex align-items-center gap-2" data-side="b">
+              <span class="fw-bold">Mode:</span>
+              <ul id="group-buttons" class="nav nav-pills nav-fill gap-2 p-1 small rounded-5 shadow-sm mb-0"
+                  role="tablist"
+                  style="background-color: #ffeedd;
+                         --bs-nav-link-color: #000; 
+                         --bs-nav-pills-link-active-color: #000; 
+                         --bs-nav-pills-link-active-bg: #ffffff;">
+                         
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active rounded-5 mode-btn" data-mode="heatmap" type="button" role="tab"
+                    data-bs-toggle="tooltip" data-bs-html="true"
+                    title="Displays gaze concentration using color gradients.<br><span style='color:orange;'>Warmer colors</span> highlight high-attention areas,<br><span style='color:blue;'>Cooler colors</span> indicate lower attention.">
+                    Heat map
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link rounded-5 mode-btn" data-mode="opacity" type="button" role="tab"
+                    data-bs-toggle="tooltip" data-bs-html="true"
+                    title="Frequently viewed areas stay visible,<br>less-viewed regions fade into darkness.<br>Creates a spotlight effect.">
+                    Opacity
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link rounded-5 mode-btn" data-mode="rawdot" type="button" role="tab"
+                    data-bs-toggle="tooltip" data-bs-html="true"
+                    title="Displays individual gaze points.<br><span style='color:red;'>Red = Low interest (1–2)</span><br><span style='color:blue;'>Blue = High interest (3–5)</span>.<br>Helps compare attention levels.">
+                    Raw Dot
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+
+        <!-- Heat map -->
+        <div class="row mb-3">
+          <!-- Left side (Clip A) -->
+          <div class="col-md-6">
+            <div class="border p-2">
+              <div class="fw-bold mb-2 text-center" id="clip-title-a">Clip 1</div>
+              <div id="viz-a" class="visualization position-relative" style="width: 100%; aspect-ratio: 16/9;">
+                <video id="video-a" class="position-absolute top-0 start-0 w-100 h-100" controls style="position: relative; z-index: 1;"></video>
+                <canvas id="canvas-a"
+                        class="position-absolute top-0 start-0 w-100 h-100"
+                        style="z-index: 2; pointer-events: none;"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right side (Clip B) -->
+          <div class="col-md-6">
+            <div class="border p-2">
+              <div class="fw-bold mb-2 text-center" id="clip-title-b">Clip 2</div>
+              <div id="viz-b" class="visualization position-relative" style="width: 100%; aspect-ratio: 16/9;">
+                <video id="video-b" class="position-absolute top-0 start-0 w-100 h-100" controls style="position: relative; z-index: 1;"></video>
+                <canvas id="canvas-b"
+                        class="position-absolute top-0 start-0 w-100 h-100"
+                        style="z-index: 2; pointer-events: none;"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="button-group-custom">
+          <button id="start-from-beginning-btn"> Play Both from Beginning</button>
+          <button id="play-both-btn"> ▶️ Play</button>
+          <button id="pause-both-btn">⏸ Pause</button>
+          <button id="sync-btn"> Sync A = B </button>
+        </div>
+
+        <!-- Jigsaw Plots -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="border text-center p-3 fw-bold">Jigsaw Plot A</div>
+            <!--/* peach jigsaw*/-->
+            <div id="jigsaw-gallery-a" class="jigsaw-gallery"></div>
+          </div>
+          <div class="col-md-6">
+            <div class="border text-center p-3 fw-bold">Jigsaw Plot B</div>
+            <!--/* peach jigsaw*/-->
+            <div id="jigsaw-gallery-b" class="jigsaw-gallery"></div>
+          </div>
+        </div>
+        
+      </div>
+
+    </div>
+  </div>
+  <div id="info-iframe-container" class="mb-3">
+    <iframe 
+    src="https://app.powerbi.com/view?r=eyJrIjoiYjhiYzFkOWItNTQ0Ny00ZjJhLTg0YWYtYWZkN2UyMmYzYjU2IiwidCI6IjI3MWQ1ZTdiLTEzNTAtNGI5Ni1hYjg0LTUyZGJkYTRjZjQwYyIsImMiOjEwfQ%3D%3D" 
+    width="100%" height="600" class="border rounded"></iframe>
+  </div>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/simpleheat/simpleheat.js"></script>
+  <script defer src="bubble.js"></script>
+</body>
+</html>
